@@ -11,7 +11,7 @@ stages:
 build:
   stage: build
   script:
-    - docker build -t $URL_REGISTRY/$TEAM/$APP_NAME:$TAG -f docker/Dockerfile .
+    - docker build --build-arg NEW_RELIC_LICENSE_KEY=$NEW_RELIC_LICENSE_KEY  --build-arg NEW_RELIC_APP_NAME=$NEW_RELIC_APP_NAME -t $URL_REGISTRY/$TEAM/$APP_NAME:$TAG -f docker/Dockerfile .
     - docker push $URL_REGISTRY/$TEAM/$APP_NAME:$TAG
   environment:
     name: ${CI_COMMIT_BRANCH}
@@ -31,8 +31,6 @@ deploy:
       APP_NAME
       ELASTICSEARCH_HOST
       REGION
-      AWS_ACCESS_KEY
-      AWS_SECRET_KEY
       NEW_RELIC_INSIGHTS_KEY
       NEW_RELIC_ACCOUNT_ID
       NEW_RELIC_EVENT_TYPE
