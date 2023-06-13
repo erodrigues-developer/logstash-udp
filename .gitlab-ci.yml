@@ -1,0 +1,48 @@
+variables:
+  TEAM: flaps
+  TAG: 1.$CI_PIPELINE_IID.0
+  NAMESPACE: logstash-udp
+  APP_NAME: logstash-udp
+  NEW_RELIC_APP_NAME: logstash-udp
+stages:
+  - build
+  - deploy
+
+build:
+  stage: build
+  script:
+    - docker build -t $URL_REGISTRY/$TEAM/$APP_NAME:$TAG -f docker/Dockerfile .
+    - docker push $URL_REGISTRY/$TEAM/$APP_NAME:$TAG
+  environment:
+    name: ${CI_COMMIT_BRANCH}
+  only:
+    - dev
+    - staging
+    - master
+
+deploy:
+  stage: deploy
+  image: registry.123milhas.com/devops/helm
+  variables:
+    ENVIRONMENT: $ENVIRONMENT
+    PORT: 5044
+    PROTOCOL: UDP
+    VARIABLES: |
+      APP_NAME
+      ELASTICSEARCH_HOST
+      REGION
+      AWS_ACCESS_KEY
+      AWS_SECRET_KEY
+      NEW_RELIC_INSIGHTS_KEY
+      NEW_RELIC_ACCOUNT_ID
+      NEW_RELIC_EVENT_TYPE
+  script:
+    - echo "$APP_NAME"
+  environment:
+    name: ${CI_COMMIT_BRANCH}
+  rules:
+    - if: $CI_COMMIT_BRANCH == "master"
+      when: manual
+    - if: $CI_COMMIT_BRANCH == "staging"
+      when: manual
+    - when: on_success
