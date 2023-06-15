@@ -31,15 +31,13 @@ ELASTICSEARCH_HOST=your_elasticsearch_host
 REGION=your_region
 AWS_ACCESS_KEY=your_aws_access_key
 AWS_SECRET_KEY=your_aws_secret_key
-NEW_RELIC_INSIGHTS_KEY=your_new_relic_insights_key
-NEW_RELIC_ACCOUNT_ID=your_new_relic_account_id
-NEW_RELIC_EVENT_TYPE=your_new_relic_event_type
 ```
 
-5. Inicie o contêiner Docker usando o seguinte comando:
+4. Contrua e execute o serviço usando o script `run.sh`:
 
 ```bash
-docker run -p 5044:5044/udp -d logstash-udp
+chmod +x run.sh
+./run.sh
 ```
 
 #### Agora, o Logstash deve estar em execução e pronto para receber logs via UDP na porta 5044.
